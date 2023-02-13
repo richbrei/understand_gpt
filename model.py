@@ -41,11 +41,8 @@ class GPTConfig:
     context_length: int = 8
     vocab_size: int = 65
     head_size: int = 12
-    n_layer: int = 12
-    n_head: int = 12
+    num_heads: int = 4
     n_embd: int = 32
-    dropout: float = 0.0
-    bias: bool = True # True: bias in Linears and LayerNorms, like GPT-2. False: a bit better and faster
 
 class SelfAttentionHead(nn.Module):
     def __init__(self, n_embd, head_size, context_length) -> None:
@@ -81,8 +78,8 @@ class GPT(nn.Module):
         super().__init__()
         self.token_embedding_table = nn.Embedding(config.vocab_size, config.n_embd)
         self.position_embedding_table = nn.Embedding(config.context_length, config.n_embd)
-        self.sa_head = SelfAttentionHead(config.n_embd, config.head_size, config.context_length)
-        self.lm_head = nn.Linear(config.head_size, config.vocab_size)
+        self.sa_heads = MultiHeadAttention(config.n_embd, config.head_size, config.context_length, config.num_heads)
+        self.lm_head = nn.Linear(config.head_size*config.num_heads, config.vocab_size)
         self.config = config
 
     def forward(self, inputs, targets=None):
@@ -90,7 +87,7 @@ class GPT(nn.Module):
         tok_embd = self.token_embedding_table(inputs) # (batch, context, n_embd)
         pos_embd = self.position_embedding_table(torch.arange(T)) # (context, n_embd)
         x = tok_embd + pos_embd # (batch, context, n_embd)
-        x = self.sa_head(x) # (batch, context, n_embd)
+        x = self.sa_heads(x) # (batch, context, n_embd)
         logits = self.lm_head(x) # (batch, context, vocab_size)
 
         if targets is None:
