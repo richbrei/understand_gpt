@@ -72,6 +72,17 @@ class MultiHeadAttention(nn.Module):
     def forward(self, x):
         return torch.cat([h(x) for h in self.heads], dim=-1)
 
+class FeedForward(nn.Module):
+    def __init__(self, size) -> None:
+        super().__init__()
+        self.net = nn.Sequential([
+            nn.Linear(size,size),
+            nn.ReLU()
+        ]) 
+
+    def forward(self,x):
+        return self.net(x)
+
 class GPT(nn.Module):
 
     def __init__(self, config):
