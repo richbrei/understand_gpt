@@ -83,6 +83,17 @@ class FeedForward(nn.Module):
     def forward(self,x):
         return self.net(x)
 
+class Block(nn.Module):
+    def __init__(self, n_embd, head_size, context_length, num_heads) -> None:
+        super().__init__()
+        self.sa = MultiHeadAttention(n_embd, head_size, context_length, num_heads)
+        self.ffwd = FeedForward(head_size*num_heads)
+
+    def forward(self,x):
+        x = self.sa(x)
+        x = self.ffwd(x)
+        return x
+
 class GPT(nn.Module):
 
     def __init__(self, config):
