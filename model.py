@@ -67,6 +67,13 @@ class SelfAttentionHead(nn.Module):
         out = attention_filter @ v # (batch, context, head)
         return out
 
+class MultiHeadAttention(nn.Module):
+    def __init__(self, n_embd, head_size, context_length, num_heads) -> None:
+        super().__init__()
+        self.heads = nn.ModuleList([SelfAttentionHead(n_embd, head_size, context_length) for _ in range(num_heads)])
+
+    def forward(self, x):
+        return torch.cat([h(x) for h in self.heads], dim=-1)
 
 class GPT(nn.Module):
 
