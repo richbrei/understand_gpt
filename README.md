@@ -16,6 +16,12 @@ The relevant components of the transformer architecture using self-attention are
 
 ![](./images/transformer.png)
 
+## Tokenization
+
+In the current example a simple tokenization is used, listing and indexing all the characters present in the input text, and using the index as the token.
+
+(Add more examples on how to tokenize like BPE)
+
 ## Embeddings
 
 Before the actual attention is happening, the series of input tokens is passed though two separate embedding layers, which are essentially lookup tables. One is the token embedding layer which holds a unique vector specific to each token in the vocabulary. The other is the position embedding, which is similar to the token embedding with the difference that rather than encoding the token into a vector it encodes the token's position. In the original attention paper the position embedding was manually defined in the example shown here it is set to be data dependant.
@@ -24,6 +30,6 @@ The following figure attempts to illustrate the process of embedding a string, i
 
 ![](./images/embeddings.png)
 
-The tensors returned from the two embeddings are added up so that you end up with a higher dimensional representation for each token and the respective position it takes in the input sequence. This result is then passed to the attention blocks.
+The tensors returned from the two embeddings are added up so that you end up with a higher dimensional representation for each token and the respective position it takes in the input sequence. In the above figure the token embedding is represented by the color that the output tensor's rows take, the position embedding is represented by it's opacity. This result is then passed to the attention blocks.
 
 ## Attention Blocks
