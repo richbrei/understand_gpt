@@ -33,3 +33,9 @@ The following figure attempts to illustrate the process of embedding a string, i
 The tensors returned from the two embeddings are added up so that you end up with a higher dimensional representation for each token and the respective position it takes in the input sequence. In the above figure the token embedding is represented by the color that the output tensor's rows take, the position embedding is represented by it's opacity. This result is then passed to the attention blocks.
 
 ## Attention Blocks
+
+The basic element of an Attention Block is the (self)-attention-head, the basic data flow of which is shown in the below figure. The attention head is associated with a hyperparameter called the `head_size`.
+
+![](./images/self_attention_head.png)
+
+The combined output of the token- & position embedding is entered into the head through 3 separate linear transformation layers emitting 3 separate tensors called the `key`, the `query` and the `value`, each of shape `(context_length, head_size)`. Key and query together form the attention filter of shape `(context_length, context_length)` which represents a data dependent weight matrix weighing the importance that each token in the sequence has to any specific token.
